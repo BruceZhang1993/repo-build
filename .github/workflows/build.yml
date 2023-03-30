@@ -9,15 +9,7 @@ jobs:
   buildAUR:
     strategy:
       matrix:
-        repos: [osu-lazer, weechat-notify-send, fpp, redsocks, drill, git-cola, qbittorrent-qt5, realesrgan-ncnn-vulkan, python-octodns]
-        include:
-          - repos: git-cola
-            preinstall-pkgs: "at-spi2-core"
-          - repos: realesrgan-ncnn-vulkan
-            preinstall-pkgs: "vulkan-intel"
-          - repos: python-octodns
-            preinstall-pkgs: "python-pip"
-
+        repos: [feeluown-git]
       fail-fast: false
       
     runs-on: ubuntu-latest
@@ -43,42 +35,10 @@ jobs:
         artifacts: "./*/*.zst"
         token: ${{ secrets.GITHUB_TOKEN }}
 
-  buildNonAUR:
-    strategy:
-      matrix:
-        PKGBUILDs: [breeze10, python-pyclipper]
-
-      fail-fast: false
-      
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Build Non-AUR packages
-        id: makepkg
-        uses: ./build-nonaur-action
-        with:
-          pkgdir: ${{ matrix.PKGBUILDs }}
-          aurDeps: true
-          
-      - uses: actions/upload-artifact@v3
-        with:
-          path: ./*/*.pkg.tar.zst
-          name: ${{ matrix.PKGBUILDs }}
-          if-no-files-found: error
-      
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          tag: "packages"
-          artifacts: ${{ steps.makepkg.outputs.pkgfile0 }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
   uploadToOneDrive:      
     runs-on: ubuntu-latest
     if: always()
-    needs: [buildAUR, buildNonAUR]
+    needs: [buildAUR]
 
     steps:
       - uses: actions/checkout@v3
@@ -94,7 +54,7 @@ jobs:
           RCLONE_ONEDRIVE_TOKEN: ${{ secrets.RCLONE_ONEDRIVE_TOKEN }}
           RCLONE_ONEDRIVE_DRIVE_ID: ${{ secrets.RCLONE_ONEDRIVE_DRIVE_ID }}
           RCLONE_ONEDRIVE_DRIVE_TYPE: personal
-          dest_path: /archrepo
-          repo_name: vifly
+          dest_path: /repo
+          repo_name: bruceutut
           gpg-privatekey: ${{ secrets.gpg_private_key }}
           local_path: ${{ steps.download.outputs.download-path }}
