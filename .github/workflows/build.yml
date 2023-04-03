@@ -9,7 +9,7 @@ jobs:
   buildAUR:
     strategy:
       matrix:
-        repos: ['fastocr-git']
+        repos: ['fastocr-git', 'feeluown-bilibili']
       fail-fast: false
       
     runs-on: ubuntu-latest
