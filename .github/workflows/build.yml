@@ -9,7 +9,7 @@ jobs:
   buildAUR:
     strategy:
       matrix:
-        repos: ['fastocr-git', 'feeluown-bilibili']
+        repos: ['fastocr-git', 'pyglet']
       fail-fast: false
       
     runs-on: ubuntu-latest
